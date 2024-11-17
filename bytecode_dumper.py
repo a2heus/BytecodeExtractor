@@ -1,6 +1,6 @@
 import re
 import os
-import magic  
+import magic
 
 source_file = "fonts.h"
 
@@ -17,7 +17,6 @@ try:
     for name, data in matches:
         byte_values = re.findall(r"0x[0-9A-Fa-f]{2}", data)
         byte_values = [int(b, 16) for b in byte_values]
-
         temp_file = f"{name}.bin"
 
         with open(temp_file, "wb") as f:
@@ -29,6 +28,12 @@ try:
             extension = ".png"
         elif "image/jpeg" in file_type:
             extension = ".jpg"
+        elif "image/vnd.microsoft.icon" in file_type:
+            extension = ".ico"
+        elif "application/x-dosexec" in file_type:
+            extension = ".exe"
+        elif "application/octet-stream" in file_type and name.lower().endswith(".sys"):
+            extension = ".sys"
         elif "font" in file_type:
             extension = ".ttf"
         elif "application/pdf" in file_type:
@@ -38,7 +43,7 @@ try:
         elif "application/zip" in file_type:
             extension = ".zip"
         else:
-            extension = ".bin"  
+            extension = ".bin"
 
         output_file = f"{name}{extension}"
         os.rename(temp_file, output_file)
